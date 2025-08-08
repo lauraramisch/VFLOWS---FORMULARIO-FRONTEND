@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="^viewport" content="widht-device-width, initial-scale=1.0">
+        <title>Cadastro de Empresa</title>
+
+        <!-- BOOTSTRAP CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- CSS -->
+         <link rel="stylesheet" href="style.css">
+    </head>
+
+<body class="bg-light p-4">
+<div class="container">
+    <h2 class="mb-4">Cadastro de Empresa</h2>
+    <form id="formCadastro">
+
+        <!-- RAZAO SOCIAL -->
+         <div class="mb-3">
+            <label class="form-label">Razao Social *</label>
+            <input type="text" class="form-control" name="razaosocial" required>
+         </div>
+
+         <!-- NOME FANTASIA -->
+         <div class="mb-3">
+            <label class="form-label">Nome Fantasia *</label>
+            <input type="text" class="form-control" name="nomefantasia" required>
+         </div>
+
+         <!-- CNPJ -->
+         <div class="mb-3">
+            <label class="form-label">CNPJ *</label>
+            <input type="text" class="form-control" name="cnpj" required pattern="\d{14}" placeholder="Somente numeros">
+         </div>
+         
+         <!-- INSCRICAO ESTADUAL -->
+         <div class="mb-3">
+            <label class="form-label">Inscricao Estadual *</label>
+            <input type="text" class="form-control" name="inscricaoestadual" required>
+         </div>
+
+         <!-- INSCRICAO MUNICIPAL -->
+         <div class="mb-3">
+            <label class="form-label">Inscricao Municipal *</label>
+            <input type="text" class="form-control" name="inscricaomunicipal" required>
+         </div>
+
+         <!-- CEP -->
+         <div class="mb-3">
+            <label class="form-label">CEP *</label>
+            <input type="text" class="form-control" id="cep" name="cep" required pattern="\{8}" placeholder="Somente numeros">
+         </div>
+         
+         <!-- ENDERECO -->
+         <div class="mb-3">
+            <label class="form-label">Endereco *</label>
+            <input type="text" class="form-control" id="endereco" name="endereco" required>
+         </div>
+
+         <!-- NOME CONTATO -->
+         <div class="mb-3">
+            <label class="form-label">Nome da Pessoa de Contato *</label>
+            <input type="text" class="form-control" name="nomedapessoadecontato" required>
+         </div>
+
+         <!-- TELEFONE -->
+         <div class="mb-3">
+            <label class="form-label">Telefone *</label>
+            <input type="text" class="form-control" name="telefone" required pattern="\{10,11}" placeholder="Somente numeros">
+         </div>
+         
+         <!-- EMAIL -->
+         <div class="mb-3">
+            <label class="form-label">Email *</label>
+            <input type="text" class="form-control" name="email" required>
+         </div>
+         
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+</div>
+
+<!-- BOOTSTRAP JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JS -->
+ <script src="script.js"></script>
+</body>
+</html>
