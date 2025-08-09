@@ -2,7 +2,7 @@
 <html lang="pt-BR">
     <head>
         <meta charset="UTF-8">
-        <meta name="^viewport" content="widht-device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cadastro de Empresa</title>
 
         <!-- BOOTSTRAP CSS -->
@@ -13,8 +13,10 @@
     </head>
 
 <body class="bg-light p-4">
+
+<!-- CADASTRO EMPRESA -->
 <div class="container">
-    <h2 class="mb-4">Cadastro de Empresa</h2>
+    <h2 class="mb-4">Cadastro Fornecedor</h2>
     <form id="formCadastro">
 
         <!-- RAZAO SOCIAL -->
@@ -48,11 +50,11 @@
          </div>
 
          <!-- CEP -->
-         <div class="mb-3">
+        <div class="mb-3">
             <label class="form-label">CEP *</label>
-            <input type="text" class="form-control" id="cep" name="cep" required pattern="\{8}" placeholder="Somente numeros">
-         </div>
-         
+            <input type="text" class="form-control" id="cep" name="cep" required pattern="\d{8}" placeholder="Somente números">
+        </div>
+
          <!-- ENDERECO -->
          <div class="mb-3">
             <label class="form-label">Endereco *</label>
@@ -66,25 +68,65 @@
          </div>
 
          <!-- TELEFONE -->
-         <div class="mb-3">
+        <div class="mb-3">
             <label class="form-label">Telefone *</label>
-            <input type="text" class="form-control" name="telefone" required pattern="\{10,11}" placeholder="Somente numeros">
-         </div>
-         
+            <input type="text" class="form-control" name="telefone" required pattern="\d{10,11}" placeholder="Somente números">
+        </div>
+
          <!-- EMAIL -->
          <div class="mb-3">
             <label class="form-label">Email *</label>
-            <input type="text" class="form-control" name="email" required>
+            <input type="email" class="form-control" name="email" required>
          </div>
          
         <button type="submit" class="btn btn-primary">Enviar</button>
     </form>
 </div>
 
+<!-- CADASTRO FORNECEDOR -->
+<div class="container mt-5">
+    <h2>Cadastro Produto</h2>
+    <form id="formFornecedor">
+        <h3>Produtos</h3>
+        <table id="tabelaProdutos" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Descrição *</th>
+                    <th>Unidade de Medida *</th>
+                    <th>Quantidade em Estoque *</th>
+                    <th>Valor Unitário *</th>
+                    <th>Valor Total</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="produtosBody"></tbody>
+        </table>
+        <button type="button" id="btnAddProduto" class="btn btn-secondary mb-3">Adicionar Produto</button>
+
+<!-- ANEXOS -->
+        <h3>Anexos</h3>
+        <input type="file" id="inputAnexos" multiple>
+        <ul id="listaAnexos" class="list-group mb-3"></ul>
+
+        <button type="submit" class="btn btn-primary">Salvar Fornecedor</button>
+    </form>
+
+<!-- MODAL LOADING -->
+<div class="modal fade" id="modalLoading" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3 text-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p>Enviando dados...</p>
+        </div>
+    </div>
+</div>
+
 <!-- BOOTSTRAP JS -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- JS -->
+
  <script src="script.js"></script>
 </body>
 </html>
