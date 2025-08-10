@@ -1,4 +1,4 @@
-// FUNÇÕES DE MÁSCARAS
+// FUNÇÕES DE MÁSCARA
 function mascaraCNPJ(valor) {
     valor = valor.replace(/\D/g, "");
     valor = valor.replace(/^(\d{2})(\d)/, "$1.$2");
@@ -8,30 +8,113 @@ function mascaraCNPJ(valor) {
     return valor;
 }
 
+// FUNÇÃO PARA EXIBIR ERRO SEM TRAVAR A INTERFACE
+function mostrarErro(elementoId, mensagem) {
+    const errorDiv = document.getElementById(elementoId + '-error');
+    const input = document.getElementById(elementoId);
+    
+    if (errorDiv && input) {
+        errorDiv.textContent = mensagem;
+        errorDiv.style.display = 'block';
+        input.classList.add('is-invalid');
+        
+        // Remove o erro após alguns segundos
+        setTimeout(() => {
+            errorDiv.style.display = 'none';
+            input.classList.remove('is-invalid');
+        }, 5000);
+    }
+}
+
+function limparErro(elementoId) {
+    const errorDiv = document.getElementById(elementoId + '-error');
+    const input = document.getElementById(elementoId);
+    
+    if (errorDiv && input) {
+        errorDiv.style.display = 'none';
+        input.classList.remove('is-invalid');
+    }
+}
+
 function mascaraCEP(valor) {
     valor = valor.replace(/\D/g, "");
     valor = valor.replace(/^(\d{5})(\d)/, "$1-$2");
     return valor;
 }
 
-function mascaraTELEFONE(valor) {
+function mascaraTelefone(valor) {
     valor = valor.replace(/\D/g, "");
-    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2");
-    valor = valor.replace(/(\d{4,5})(\d{4})$/, "$1-$2");
+    if (valor.length > 10) {
+        valor = valor.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
+    } else {
+        valor = valor.replace(/^(\d{2})(\d{4})(\d{4}).*/, "($1) $2-$3");
+    }
     return valor;
 }
 
+
 // APLICANDO AS MÁSCARAS
-document.querySelector('input[name="cnpj"]').addEventListener('input', function () {
-    this.value = mascaraCNPJ(this.value);
+
+/*============================ CNPJ ============================ */
+document.getElementById('cnpj').addEventListener('input', function() {
+    const digitos = this.value.replace(/\D/g, '').slice(0, 14);
+    this.value = mascaraCNPJ(digitos);
+    
+    if (digitos.length > 0) {
+        limparErro('cnpj');
+    }
 });
 
-document.getElementById('cep').addEventListener('input', function () {
-    this.value = mascaraCEP(this.value);
+document.getElementById('cnpj').addEventListener('paste', function(e) {
+    e.preventDefault();
+    const digitos = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 14);
+    this.value = mascaraCNPJ(digitos);
 });
 
-document.querySelector('input[name="telefone"]').addEventListener('input', function () {
-    this.value = mascaraTELEFONE(this.value);
+document.getElementById('cnpj').addEventListener('blur', function() {
+    const digitos = this.value.replace(/\D/g, '');
+    if (digitos.length > 0 && digitos.length !== 14) {
+        mostrarErro('cnpj', 'CNPJ incompleto! São necessários 14 dígitos.');
+    }
+});
+
+/* ============================CEP ============================ */
+document.getElementById('cep').addEventListener('input', function() {
+    const digitos = this.value.replace(/\D/g, '').slice(0, 8);
+    this.value = mascaraCEP(digitos);
+    
+    if (digitos.length > 0) {
+        limparErro('cep');
+    }
+});
+
+document.getElementById('cep').addEventListener('paste', function(e) {
+    e.preventDefault();
+    const digitos = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 8);
+    this.value = mascaraCEP(digitos);
+});
+
+/* ============================ TELEFONE ============================ */
+document.getElementById('telefone').addEventListener('input', function() {
+    const digitos = this.value.replace(/\D/g, '').slice(0, 11); // DDD + 9 dígitos
+    this.value = mascaraTelefone(digitos);
+    
+    if (digitos.length > 0) {
+        limparErro('telefone');
+    }
+});
+
+document.getElementById('telefone').addEventListener('paste', function(e) {
+    e.preventDefault();
+    const digitos = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 11);
+    this.value = mascaraTelefone(digitos);
+});
+
+document.getElementById('telefone').addEventListener('blur', function() {
+    const digitos = this.value.replace(/\D/g, '');
+    if (digitos.length > 0 && digitos.length < 10) {
+        mostrarErro('telefone', 'Telefone incompleto! Formato esperado: (XX) 9XXXX-XXXX');
+    }
 });
 
 // BUSCA ENDEREÇO PELO CEP
@@ -41,16 +124,19 @@ document.getElementById('cep').addEventListener('blur', function () {
         fetch(`https://viacep.com.br/ws/${cep}/json/`)
             .then(res => res.json())
             .then(data => {
-                if (!data.erro) {
+                                 if (!data.erro) {
                     document.getElementById('endereco').value =
                         `${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`;
+                    limparErro('cep');
                 } else {
-                    alert("CEP NÃO ENCONTRADO!");
+                    mostrarErro('cep', 'CEP NÃO ENCONTRADO!');
                 }
             })
-            .catch(() => alert('ERRO AO BUSCAR CEP!'));
-    } else {
-        alert("CEP INVÁLIDO!");
+            .catch(() => {
+                mostrarErro('cep', 'ERRO AO BUSCAR CEP!');
+            });
+    } else if (cep.length > 0) {
+        mostrarErro('cep', 'CEP INVÁLIDO! Digite 8 dígitos.');
     }
 });
 
@@ -61,9 +147,8 @@ const inputAnexos = document.getElementById('inputAnexos');
 const listaAnexos = document.getElementById('listaAnexos');
 const modalLoading = new bootstrap.Modal(document.getElementById('modalLoading'));
 
-let anexosEmMemoria = {}; // chave: nome arquivo, valor: Blob
+let anexosEmMemoria = {}; 
 
-// FUNÇÃO PARA CRIAR LINHA DE PRODUTO
 function criarLinhaProduto() {
     const tr = document.createElement('tr');
 
@@ -101,6 +186,15 @@ criarLinhaProduto();
 btnAddProduto.addEventListener('click', criarLinhaProduto);
 
 // ============================ ANEXOS ============================
+
+const TIPOS_PERMITIDOS =[
+    'application/pdf', 
+    'application/msword', 
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+];
+
+const MAX_FILE_SIZE_MB = 5; // LIMITANDO OS MB
+
 function atualizarListaAnexos() {
     listaAnexos.innerHTML = '';
     Object.keys(anexosEmMemoria).forEach(nome => {
@@ -143,14 +237,28 @@ function atualizarListaAnexos() {
 inputAnexos.addEventListener('change', () => {
     const arquivos = inputAnexos.files;
     for (const arquivo of arquivos) {
+        const tipoValido = TIPOS_PERMITIDOS.includes(arquivo.type);
+        const tamanhoMB = arquivo.size /(1024 *1024);
+
+        if(!tipoValido){
+            alert(`O ARQUIVO "${arquivo.name}" NÃO É DE UM TIPO PERMITIDO.`);
+            continue;
+        }
+
+        if(tamanhoMB > MAX_FILE_SIZE_MB){
+            alert(`O ARQUIVO "${arquivo.name}" EXCEDE O LIMITE DE ${MAX_FILE_SIZE_MB} MB!`)
+            continue;
+        }
+
         anexosEmMemoria[arquivo.name] = arquivo;
     }
+
     atualizarListaAnexos();
     inputAnexos.value = ''; // limpa input
 });
 
 // ============================ SUBMIT FORM ============================
-document.getElementById('formCadastro').addEventListener('submit', function (e) {
+document.getElementById('formProduto').addEventListener('submit', function (e) {
     e.preventDefault();
 
     // VALIDAR PELO MENOS UM PRODUTO
@@ -163,11 +271,16 @@ document.getElementById('formCadastro').addEventListener('submit', function (e) 
     for (const tr of produtosBody.children) {
         const descricao = tr.querySelector('.descricao').value.trim();
         const unidade = tr.querySelector('.unidade').value.trim();
-        const qtd = tr.querySelector('.quantidade').value;
-        const valorUnitario = tr.querySelector('.valorUnitario').value;
+        const qtd = tr.querySelector('.quantidade').value.trim();
+        const valorUnitario = tr.querySelector('.valorUnitario').value.trim();
 
         if (!descricao || !unidade || !qtd || !valorUnitario) {
             alert("Preencha todos os campos obrigatórios dos produtos!");
+            return;
+        }
+
+        if (isNaN(qtd) || isNaN(valorUnitario)){
+            alert("Quantidade e Valor Unitário devem ser válidos.");
             return;
         }
     }
@@ -178,24 +291,50 @@ document.getElementById('formCadastro').addEventListener('submit', function (e) 
         return;
     }
 
-    // MONTAR JSON
-    const produtos = Array.from(produtosBody.children).map(tr => ({
-        descricao: tr.querySelector('.descricao').value.trim(),
-        unidadeMedida: tr.querySelector('.unidade').value.trim(),
-        quantidadeEstoque: Number(tr.querySelector('.quantidade').value),
-        valorUnitario: Number(tr.querySelector('.valorUnitario').value),
-        valorTotal: Number(tr.querySelector('.valorTotal').value),
-    }));
+    // PEGA FORM CADASTRO
+    const dadosEmpresa = {
+        razaosocial: document.getElementById('razaosocial').value.trim(),
+        nomefantasia: document.getElementById('nomefantasia').value.trim(),
+        cnpj: document.getElementById('cnpj').value.trim(),
+        inscricaoestadual: document.getElementById('inscricaoestadual').value.trim(),
+        inscricaomunicipal: document.getElementById('inscricaomunicipal').value.trim(),
+        cep: document.getElementById('cep').value.trim(),
+        endereco: document.getElementById('endereco').value.trim(),
+        nomedapessoadecontato: document.getElementById('nomedapessoadecontato').value.trim(),
+        telefone: document.getElementById('telefone').value.trim(),
+        email: document.getElementById('email').value.trim()
+    };
 
+    // MONTAR JSON
+    const produtos = Array.from(produtosBody.children).map(tr => {
+        const quantidadeEstoque = Number(tr.querySelector('.quantidade').value);
+        const valorUnitario = Number(tr.querySelector('.valorUnitario').value);
+        const valorTotal = quantidadeEstoque * valorUnitario;
+        return {
+            descricao: tr.querySelector('.descricao').value.trim(),
+            unidadeMedida: tr.querySelector('.unidade').value.trim(),
+            quantidadeEstoque,
+            valorUnitario,
+            valorTotal,
+        };
+    });
     const anexos = Object.entries(anexosEmMemoria).map(([nome, blob]) => ({
         nome,
         tamanho: blob.size,
         tipo: blob.type,
     }));
 
-    const dados = { produtos, anexos };
+    const dados = { dadosEmpresa, produtos, anexos };
 
     console.log('JSON de envio:', dados);
+
+    const blob = new Blob([JSON.stringify(dados, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${dadosEmpresa.razaosocial.replace(/\s/g, '_')}_dados.json`;   
+    a.click();
+    URL.revokeObjectURL(url);
 
     // MOSTRAR MODAL LOADING
     modalLoading.show();

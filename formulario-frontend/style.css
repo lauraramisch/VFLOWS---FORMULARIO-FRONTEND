@@ -1,15 +1,182 @@
-body{
+/* CSS GLOBAL */
+body {
     font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
 }
 
-h2{
-    font-weight: bold;
-    color: #333;
-}
-
-form{
-    background: white;
+/* CONTAINER PRINCIPAL */
+.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
     padding: 20px;
+    background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* CABEÇALHO PRINCIPAL */
+h2 {
+    text-align: center;
+    color: #0066cc; 
+    font-size: 45px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+
+h3 {
+    color: #000000; 
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* FORMULARIO EM DUAS COLUNAS */
+form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+form > div {
+    display: flex;
+    flex-direction: column;
+}
+
+/* TABELA PRODUTOS */
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    margin-bottom: 20px; 
+}
+
+.table th,
+.table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f4f4f4;
+}
+
+/* BOTÃO ADICIONAR PRODUTOS */
+#btnAddProduto {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%; 
+    transition: background-color 0.3s ease;
+}
+
+#btnAddProduto:hover {
+    background-color: #218838;
+}
+
+/* FORMULARIO CADASTRO DE PRODUTOS E ANEXOS */
+#formProduto {
+    display: block;
+    margin-bottom: 20px;
+}
+
+#formProduto h3 {
+    margin-bottom: 15px;
+}
+
+#tabelaProdutos {
+    margin-bottom: 20px;
+}
+
+#inputAnexos {
+    margin-bottom: 15px;
+}
+
+/* BOTÕES ALINHADOS E CENTRALIZADOS */
+.form-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    gap: 15px; 
+    width: 100%;
+    text-align: center;
+}
+
+/* BOTÕES */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: auto; 
+    transition: background-color 0.3s ease;
+    margin: 0 auto; 
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* LISTA DE ANEXOS */
+ul.list-group {
+    padding: 0;
+    margin-top: 15px;
+}
+
+ul.list-group li {
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+ul.list-group li .btn {
+    background-color: transparent;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+}
+
+ul.list-group li .btn:hover {
+    text-decoration: underline;
+}
+
+/* ANIMAÇÃO PARA CAMPOS OBRIGATÓRIOS */
+@keyframes campoObrigatorio {
+    0% { border-color: #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); }
+    50% { border-color: #dc3545; box-shadow: 0 0 0 0.3rem rgba(220, 53, 69, 0.5); }
+    100% { border-color: #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); }
+}
+
+.campo-obrigatorio {
+    animation: campoObrigatorio 1.5s infinite;
+}
+
+/* RESPONSIVIDADE */
+@media screen and (max-width: 768px) {
+    form {
+        grid-template-columns: 1fr; 
+    }
+
+    h2 {
+        font-size: 20px;
+    }
 }
